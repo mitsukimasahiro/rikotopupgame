@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Top Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Form Top Up</h1>
+  </header>
+  <div class="container" id="form-container"></div>
+  <footer>
+    &copy; 2025 RIKO STORE | DANA / GoPay: 085215388102
+  </footer>
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+    const game = gameData.find(g => g.id === id);
+    const form = document.getElementById("form-container");
+
+    if (game) {
+      let paketOptions = "";
+      game.paket.forEach(p => {
+        paketOptions += `<option value="${p.jumlah} - ${p.harga}">${p.jumlah} (${p.harga})</option>`;
+      });
+
+      form.innerHTML = \`
+        <h2>\${game.nama}</h2>
+        <img src="\${game.logo}" style="width:100px;margin:10px 0;">
+        <label>ID Game</label>
+        <input type="text" id="idgame" placeholder="Masukkan ID">
+        <label>Server (jika ada)</label>
+        <input type="text" id="server" placeholder="Masukkan server (opsional)">
+        <label>Pilih Paket</label>
+        <select id="paket">\${paketOptions}</select>
+        <label>Metode Pembayaran</label>
+        <select id="metode">
+          <option>DANA</option>
+          <option>GoPay</option>
+        </select>
+        <button onclick="kirimWA()">Kirim via WhatsApp</button>
+      \`;
+    } else {
+      form.innerHTML = "<p>Game tidak ditemukan.</p>";
+    }
+
+    function kirimWA() {
+      const idgame = document.getElementById("idgame").value;
+      const server = document.getElementById("server").value;
+      const paket = document.getElementById("paket").value;
+      const metode = document.getElementById("metode").value;
+
+      const pesan = \`Halo Admin, saya ingin top up \${game.nama}%0AID: \${idgame}%0AServer: \${server}%0APaket: \${paket}%0APembayaran: \${metode}\`;
+
+      window.open(\`https://wa.me/6285215388102?text=\${pesan}\`, "_blank");
+    }
+  </script>
+</body>
+</html>
